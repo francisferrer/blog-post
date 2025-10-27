@@ -1,46 +1,49 @@
 <?php
 
-namespace App\Filament\Resources\Users\Tables;
+namespace App\Filament\Resources\Posts\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn; 
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 
-class UsersTable
+class PostsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->label('Full Name')
+                TextColumn::make('title')
+                    ->label('Title')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('email')
+                TextColumn::make('content')
                     ->searchable()
-                    ->label('Email Address'),
+                    ->limit(50)
+                    ->label('Content'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                Filter::make('created')
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                
-                Action::make('custom action')->icon('heroicon-o-cog')
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
